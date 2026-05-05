@@ -18,7 +18,10 @@ namespace 五張撲克牌
         int[] playerPoker = new int[5];
 
         long totalFunds = 1000000;
+        long startingFunds = 1000000;
         long currentBet = 0;
+        const long WIN_LIMIT = 1000000000000000000;
+
 
         public frmPoker()
         {
@@ -28,6 +31,7 @@ namespace 五張撲克牌
             btnDealCard.Enabled = false;
             btnChangeCard.Enabled = false;
             btnCheck.Enabled = false;
+            btnClear.Enabled = true;
             txtTotalFunds.Text = totalFunds.ToString();
         }
 
@@ -64,12 +68,12 @@ namespace 五張撲克牌
         private void Shuffle()
         {
             Random rand = new Random();
-            for (int i = 0; i < allPoker.Length; i++)
+            for (int i = allPoker.Length - 1; i > 0; i--)
             {
-                int r = rand.Next(allPoker.Length);
+                int r = rand.Next(i + 1);
                 int temp = allPoker[r];
-                allPoker[r] = allPoker[0];
-                allPoker[0] = temp;
+                allPoker[r] = allPoker[i];
+                allPoker[i] = temp;
             }
         }
 
@@ -82,6 +86,28 @@ namespace 五張撲克牌
                 pic[i].Enabled = false;
             }
         }
+
+        private void ResetGame()
+        {
+            totalFunds = 1000000;
+            startingFunds = 1000000;
+            txtTotalFunds.Text = totalFunds.ToString("N0");
+            txtTotalFunds.ReadOnly = false; // 解鎖總資金，讓玩家重新設定
+
+            txtBet.Text = "1000";
+            txtBet.ReadOnly = false;
+            lblResult.Text = "歡迎來到五張撲克牌遊戲！請輸入押注金額並按 [押注] 開始遊戲。";
+            lblResult.BackColor = Color.White;
+
+            ResetTableToBack();
+
+            btnBet.Enabled = true;
+            btnDealCard.Enabled = false;
+            btnChangeCard.Enabled = false;
+            btnCheck.Enabled = false;
+            btnClear.Enabled = true;
+            txtTotalFunds.Focus();
+        }
         #endregion
 
         #region 事件處理程序
@@ -92,13 +118,14 @@ namespace 五張撲克牌
             {
                 string rawTotal = txtTotalFunds.Text.Replace(",", "").Trim();
 
-                if (long.TryParse(rawTotal, out long initialFunds) && initialFunds > 0)
+                if (long.TryParse(rawTotal, out long initialFunds) && initialFunds > 0 && initialFunds <= WIN_LIMIT)
                 {
                     totalFunds = initialFunds;
+                    startingFunds = initialFunds;
                 }
                 else
                 {
-                    MessageBox.Show("請輸入有效的初始總資金，必須為正整數！", "總資金錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("請輸入有效的初始總資金，必須為正整數且金額小於 1,000,000,000,000,000,000！", "總資金錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -110,6 +137,7 @@ namespace 五張撲克牌
                 if (currentBet <= totalFunds)
                 {
                     txtTotalFunds.ReadOnly = true; // 正式鎖定總資金
+                    txtBet.ReadOnly = true;
 
                     totalFunds -= currentBet; // 扣錢
                     txtTotalFunds.Text = totalFunds.ToString("N0"); // 顯示漂亮的千分位格式
@@ -119,11 +147,13 @@ namespace 五張撲克牌
 
                     btnBet.Enabled = false;
                     btnDealCard.Enabled = true;
+                    btnClear.Enabled = false;
                     lblResult.Text = "押注成功，請按發牌！";
+                    btnDealCard.Focus();
                 }
                 else
                 {
-                    MessageBox.Show("總資金不足，請重新輸入押注金額！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("您的總資金只有 {totalFunds:N0} 元，無法押注 {currentBet:N0} 元！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             else
@@ -140,7 +170,7 @@ namespace 五張撲克牌
             if(pic.Tag.ToString() == "back")
             {
                 pic.Tag = "front";
-                pic.Image = GetImage(cardNum);
+                pic.Image = GetImage(cardNum + 1);
             }
             else
             {
@@ -175,6 +205,7 @@ namespace 五張撲克牌
             btnDealCard.Enabled = false; // 發完牌就不能再發
             btnChangeCard.Enabled = true; // 開放換牌
             lblResult.Text = "請點擊想換的牌，然後按 [換牌]";
+            btnChangeCard.Focus();
         }
 
         private void btnChangeCard_Click(object sender, EventArgs e)
@@ -195,13 +226,12 @@ namespace 五張撲克牌
             btnChangeCard.Enabled = false;
             btnCheck.Enabled = true; // 開放判斷牌型
             lblResult.Text = "請點擊 [判斷牌型]";
+            btnCheck.Focus();
         }
-
-        #endregion
 
         private void btnCheck_Click(object sender, EventArgs e)
         {
-            string[] colorList = { "梅花", "方塊", "黑桃", "紅心" };
+            string[] colorList = { "梅花", "方塊", "紅心", "黑桃" };
             string[] pointList = { "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K" };
             int[] pokerColor = new int[5];
             int[] pokerPoint = new int[5];
@@ -293,16 +323,39 @@ namespace 五張撲克牌
 
             btnCheck.Enabled = false;
             btnBet.Enabled = true;
+            btnClear.Enabled = true;
+            txtBet.ReadOnly = false;
+            txtBet.Focus();
 
+            if (totalFunds >= WIN_LIMIT)
+            {
+                MessageBox.Show($"天啊！您已達到財富巔峰 (${totalFunds:N0})！\n莊家賠不起了，請您去拉斯維加斯發展吧！",
+                                "遊戲通關", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                ResetGame();
+                return; // 直接離開，不再執行下面破產判斷
+            }
             if (totalFunds <= 0)
             {
                 MessageBox.Show("您已經破產了！莊家看你可憐，再借你 1,000,000 元重新開始！", "遊戲結束", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                totalFunds = 1000000;
-                txtTotalFunds.Text = totalFunds.ToString("N0");
-                txtTotalFunds.ReadOnly = false; // 破產後解鎖總資金，讓他可以重新設定
-                lblResult.Text = " ";
-                lblResult.BackColor = Color.White;
+                ResetGame();
+                return;
             }
         }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            long profit = totalFunds - startingFunds;
+
+            string message = profit >= 0
+                ? $"恭喜大贏家！最終帶走 ${totalFunds:N0}\n淨賺 ${profit:N0}！"
+                : $"勝敗乃兵家常事。最終帶走 ${totalFunds:N0}\n共虧損 ${Math.Abs(profit):N0}。";
+
+            MessageBox.Show(message, "結算離場", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            // 結算後將遊戲完全重置回初始狀態
+            ResetGame();
+        }
+
+        #endregion
     }
 }
