@@ -154,7 +154,7 @@ namespace 五張撲克牌
                 }
                 else
                 {
-                    MessageBox.Show("您的總資金只有 {totalFunds:N0} 元，無法押注 {currentBet:N0} 元！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show($"您的總資金只有 {totalFunds:N0} 元，無法押注 {currentBet:N0} 元！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     txtBet.Focus();
                 }
             }
