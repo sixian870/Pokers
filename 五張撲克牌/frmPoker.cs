@@ -126,6 +126,7 @@ namespace 五張撲克牌
                 else
                 {
                     MessageBox.Show("請輸入有效的初始總資金，必須為正整數且金額小於 1,000,000,000,000,000,000！", "總資金錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtTotalFunds.Focus();
                     return;
                 }
             }
@@ -154,11 +155,13 @@ namespace 五張撲克牌
                 else
                 {
                     MessageBox.Show("您的總資金只有 {totalFunds:N0} 元，無法押注 {currentBet:N0} 元！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    txtBet.Focus();
                 }
             }
             else
             {
                 MessageBox.Show("請輸入正確的押注金額，必須為正整數！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                txtBet.Focus();
             }
         }
 
@@ -167,7 +170,7 @@ namespace 五張撲克牌
             PictureBox pic = sender as PictureBox;
             int index = int.Parse(pic.Name.Replace("pic", ""));
             int cardNum = playerPoker[index];
-            if(pic.Tag.ToString() == "back")
+            if (pic.Tag.ToString() == "back")
             {
                 pic.Tag = "front";
                 pic.Image = GetImage(cardNum + 1);
@@ -236,7 +239,7 @@ namespace 五張撲克牌
             int[] pokerColor = new int[5];
             int[] pokerPoint = new int[5];
 
-            for(int i = 0; i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 pokerColor[i] = playerPoker[i] % 4;
                 pokerPoint[i] = playerPoker[i] / 4;
