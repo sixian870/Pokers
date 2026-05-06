@@ -160,7 +160,7 @@ namespace 五張撲克牌
             }
             else
             {
-                MessageBox.Show("請輸入正確的押注金額，必須為正整數！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("請輸入正確的押注金額，必須為正整數且小於總資金！", "押注金額錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtBet.Focus();
             }
         }
@@ -330,9 +330,9 @@ namespace 五張撲克牌
             txtBet.ReadOnly = false;
             txtBet.Focus();
 
-            if (totalFunds >= WIN_LIMIT)
+            if (totalFunds > WIN_LIMIT)
             {
-                MessageBox.Show($"天啊！您已達到財富巔峰 (${totalFunds:N0})！\n莊家賠不起了，請您去拉斯維加斯發展吧！",
+                MessageBox.Show($"天啊！您已經超過財富巔峰 (${totalFunds:N0})！\n莊家賠不起了，請您去拉斯維加斯發展吧！",
                                 "遊戲通關", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 ResetGame();
                 return; // 直接離開，不再執行下面破產判斷
