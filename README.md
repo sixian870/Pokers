@@ -59,7 +59,8 @@
       
       > 若輸入格式非大於零之整數或大於總資金，將彈出錯誤視窗，關閉後會自動聚焦於押注金額，方便玩家重新輸入。
 
-      <img width="250" alt="螢幕擷取畫面 2026-05-06 001233" src="https://github.com/user-attachments/assets/4768cf19-1c3f-467b-9911-ce9b0c7cecf0" />
+      <img width="250" alt="螢幕擷取畫面 2026-05-06 130017" src="https://github.com/user-attachments/assets/15fa23fe-670d-431e-813c-9d3f5d22d78f" />
+
 
     * 點擊 `押注` 按鈕後，將從總資金中扣除押注金額。
 
@@ -105,7 +106,7 @@
 
     * **達上限強制通關**：若總資金贏得超過系統極限（1,000 兆），將觸發「莊家賠不起」的隱藏通關彩蛋，並自動重置遊戲。
 
-      <img width="250" alt="螢幕擷取畫面 2026-05-06 004507" src="https://github.com/user-attachments/assets/56b53624-6552-4048-9083-bfbb8d5a1ce4" />
+      <img width="250" alt="螢幕擷取畫面 2026-05-06 125838" src="https://github.com/user-attachments/assets/288917e2-e26f-4221-a4ef-02833db1d9dc" />
 
 
 6.  **欄位跳轉與視窗關閉**：
